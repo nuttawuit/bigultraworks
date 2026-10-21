@@ -1,21 +1,34 @@
-// app/page.js
-import Link from 'next/link';
+export const instant = false; // <-- อนุญาตให้หน้านี้เป็น Blocking Route ตามคำแนะนำของ Next.js
 
-export default function HomePage() {
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+
+export default async function Home() {
+  cookies();
+
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  const userStatus = (session.user as any)?.status;
+
+  if (userStatus === "WAITING_APPROVAL" || userStatus === "REJECTED") {
+    redirect("/pending");
+  }
+
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-bold">ยินดีต้อนรับสู่ระบบ</h1>
-      <p className="mt-2 text-gray-600">หน้าแรกของเว็บ</p>
+    <div className="space-y-6">
+      <h1 className="text-3xl font-bold text-gray-900">Welcome to Big Ultra Works</h1>
+      <p className="text-gray-600">ยินดีต้อนรับเข้าสู่ระบบควบคุมส่วนกลาง ระบบอนุมัติสิทธิ์ทำงานปกติแล้วครับ!</p>
       
-      {/* การ Link ไปหน้าอื่น ใช้ <Link> ของ Next.js จะโหลดไวและไม่ Refresh หน้า */}
-      <div className="mt-4">
-        <Link 
-          href="/dashboard" 
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-        >
-          Go to Dashboard
-        </Link>
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <p className="text-sm text-gray-700">เข้าสู่ระบบด้วยอีเมล: <strong className="text-indigo-600">{session.user?.email}</strong></p>
+        <p className="text-sm text-gray-700 mt-1">สถานะสิทธิ์: <span className="text-emerald-600 font-semibold">{userStatus}</span></p>
       </div>
-    </main>
+    </div>
   );
 }
