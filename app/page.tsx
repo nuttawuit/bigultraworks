@@ -1,13 +1,9 @@
-export const instant = false; // <-- อนุญาตให้หน้านี้เป็น Blocking Route ตามคำแนะนำของ Next.js
-
+export const instant = false;
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 
 export default async function Home() {
-  cookies();
-
   const session = await getServerSession(authOptions);
 
   if (!session) {
