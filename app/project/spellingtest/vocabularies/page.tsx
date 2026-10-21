@@ -3,9 +3,6 @@ import { neon } from '@neondatabase/serverless';
 import { Suspense } from 'react';
 import VocabList from './VocabList';
 
-// บังคับให้หน้านี้เรนเดอร์แบบ Dynamic เสมอ เพื่อป้องกันปัญหา Prerender fetch error บน Vercel
-export const dynamic = 'force-dynamic';
-
 const sql = neon(process.env.DATABASE_URL!);
 
 // Server Action: เพิ่มคำศัพท์ (รองรับ imageUrl)
@@ -77,6 +74,7 @@ async function VocabTableSection() {
   let categories: any[] = [];
 
   try {
+    // ดึงข้อมูลสดๆ โดยไม่ใช้ Cache ตอน Build
     const vocabResult = await sql`
       SELECT v.id, v.word, v.translation, v.created_at, v.category_id, v.image_url, c.name as category_name
       FROM vocabs v
