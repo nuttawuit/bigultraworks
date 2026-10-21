@@ -3,6 +3,9 @@ import { neon } from '@neondatabase/serverless';
 import { Suspense } from 'react';
 import VocabList from './VocabList';
 
+// บังคับให้หน้านี้เรนเดอร์แบบ Dynamic เสมอ เพื่อป้องกันปัญหา Prerender fetch error บน Vercel
+export const dynamic = 'force-dynamic';
+
 const sql = neon(process.env.DATABASE_URL!);
 
 // Server Action: เพิ่มคำศัพท์ (รองรับ imageUrl)
