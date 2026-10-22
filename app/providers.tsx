@@ -1,4 +1,4 @@
-"use client";
+"import client";
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
@@ -19,7 +19,7 @@ import { useSession, signOut, SessionProvider } from "next-auth/react";
 
 function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const isAuthPage = pathname === "/login" || pathname === "/pending";
 
@@ -33,7 +33,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
     }));
   };
 
-  // หากเป็นหน้า Login หรือ Pending ให้แสดงผลเนื้อหาเต็มหน้าจอโดยมี Tailwind คุมความสูง
+  // หากเป็นหน้า Login หรือ Pending ให้แสดงผลเนื้อหาเต็มหน้าจอ
   if (isAuthPage) {
     return (
       <div className="min-h-screen w-full bg-gray-100 text-gray-900 flex flex-col justify-center items-center">
@@ -193,7 +193,9 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
           <span className="text-sm font-medium text-gray-600">Workspace / System Control</span>
 
           <div className="flex items-center gap-4">
-            {user && (
+            {status === "loading" ? (
+              <div className="text-xs text-gray-400">Loading...</div>
+            ) : user ? (
               <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
                 <div className="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 shadow-xs">
                   <UserIcon className="w-5 h-5" />
@@ -209,7 +211,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
                   </div>
                 </div>
               </div>
-            )}
+            ) : null}
 
             <button
               onClick={() => signOut({ callbackUrl: '/login' })}
