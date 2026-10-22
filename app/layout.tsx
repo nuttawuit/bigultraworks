@@ -1,11 +1,6 @@
-import type { Metadata } from "next";
-import "./globals.css";
 import Providers from "./providers";
-
-export const metadata: Metadata = {
-  title: "Big Ultra Works",
-  description: "System Control Dashboard",
-};
+import DashboardLayoutContent from "@/components/DashboardLayoutContent";
+import "./globals.css";
 
 export default function RootLayout({
   children,
@@ -13,9 +8,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="h-full bg-gray-50 text-gray-900 overflow-x-hidden">
-        <Providers>{children}</Providers>
+    <html lang="th">
+      <body>
+        <Providers>
+          <DashboardLayoutContent>{children}</DashboardLayoutContent>
+        </Providers>
       </body>
     </html>
   );
